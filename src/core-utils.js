@@ -42,7 +42,7 @@ export const getDefaultUniforms = () => {
  * @param {object} composer Threejs EffectComposer instance
  * @returns a custom threejs app instance that has the basic setup ready that can be further acted upon/customized
  */
-export const setupApp = (app, scene, renderer, camera, enableAnimation = false, uniforms = getDefaultUniforms(), composer = null) => {
+export const runApp = (app, scene, renderer, camera, enableAnimation = false, uniforms = getDefaultUniforms(), composer = null) => {
     // Create the HTML container, styles defined in index.html
     const container = document.getElementById("container")
     container.appendChild(renderer.domElement)

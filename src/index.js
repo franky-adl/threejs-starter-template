@@ -8,7 +8,7 @@ import { RectAreaLightUniformsLib } from "three/examples/jsm/lights/RectAreaLigh
 import { BokehPass } from "three/examples/jsm/postprocessing/BokehPass"
 
 // Core boilerplate code deps
-import { createCamera, createComposer, createRenderer, setupApp } from "./core-utils"
+import { createCamera, createComposer, createRenderer, runApp } from "./core-utils"
 
 // Other deps
 import Tile from './assets/checker_tile.png'
@@ -50,7 +50,7 @@ let renderer = createRenderer({ antialias: true }, (_renderer) => {
 let camera = createCamera(45, 1, 1000, { x: 0, y: 5, z: -15 })
 
 // (Optional) Create the EffectComposer and passes for post-processing
-// If you don't need post-processing, just comment/delete the following creation code, and skip passing any composer to 'setupApp' at the bottom
+// If you don't need post-processing, just comment/delete the following creation code, and skip passing any composer to 'runApp' at the bottom
 let bokehPass = new BokehPass(scene, camera, {
   focus: 0.0,
   aperture: 0.0,
@@ -62,7 +62,7 @@ let composer = createComposer(renderer, scene, camera, (comp) => {
 })
 
 /**************************************************
- * 2. Set up your scene in this threejs app
+ * 2. Build your scene in this threejs app
  * This app object needs to consist of at least the async initScene() function (it is async so the animate function can wait for initScene() to finish before being called)
  * initScene() is called after a basic threejs environment has been set up, you can add objects/lighting to you scene in initScene()
  * if your app needs to animate things(i.e. not static), include a updateScene(interval, elapsed) function in the app as well
@@ -100,7 +100,7 @@ let app = {
     const matStdFloor = new THREE.MeshStandardMaterial({ color: 0x808080, roughness: 0.5, metalness: 0 })
     const mshStdFloor = new THREE.Mesh(geoFloor, matStdFloor)
     // need await to make sure animation starts only after texture is loaded
-    // this works because the animation code is 'then-chained' after initScene(), see core-utils.setupApp
+    // this works because the animation code is 'then-chained' after initScene(), see core-utils.runApp
     await this.loadTexture(mshStdFloor)
     this.scene.add(mshStdFloor)
 
@@ -174,11 +174,11 @@ let app = {
 }
 
 /**************************************************
- * 3. Set up and run the app
- * 'setupApp' will do most of the boilerplate setup code for you:
+ * 3. Run the app
+ * 'runApp' will do most of the boilerplate setup code for you:
  * e.g. HTML container, window resize listener, mouse move/touch listener for shader uniforms, THREE.Clock() for animation
  * Executing this line puts everything together and runs the app
  * ps. if you don't use custom shaders, pass undefined to the 'uniforms'(2nd-last) param
  * ps. if you don't use post-processing, pass undefined to the 'composer'(last) param
  *************************************************/
-setupApp(app, scene, renderer, camera, true, undefined, composer)
+runApp(app, scene, renderer, camera, true, undefined, composer)
