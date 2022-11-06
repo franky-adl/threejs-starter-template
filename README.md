@@ -18,7 +18,7 @@ This template does not cover all scenarios or usages of Three.js, and is still u
 - three: 0.145.0
 - parcel: ^2.7.0
 
-### How to run locally
+## How to run locally
 
 1. npm i
 2. make dev
