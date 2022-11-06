@@ -10,7 +10,7 @@ This template does not cover all scenarios or usages of Three.js, and is still u
 
 - Does all the usual Three.js setup code for you so you can focus on your own scene and objects
 - Uses async/await for texture/images loading such that the scene unveils only after all images are loaded
-- Uses Parcel with minimal configurations so you need to care about setting up the bundler
+- Uses Parcel with minimal configurations so you don't need to care about setting up the bundler
 
 ## Package versions
 
