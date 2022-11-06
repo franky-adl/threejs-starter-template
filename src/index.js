@@ -68,11 +68,9 @@ let composer = createComposer(renderer, scene, camera, (comp) => {
  * if your app needs to animate things(i.e. not static), include a updateScene(interval, elapsed) function in the app as well
  *************************************************/
 let app = {
-  // scene, renderer, composer, container and camera can be accessed under 'this' object
-  // because they have already been defined as props of the app object by the time initScene() is called
   async initScene() {
     // OrbitControls
-    this.controls = new OrbitControls(this.camera, this.renderer.domElement)
+    this.controls = new OrbitControls(camera, renderer.domElement)
     this.controls.enableDamping = true
 
     // Scene setup taken from https://threejs.org/examples/#webgl_lights_rectarealight
@@ -81,19 +79,19 @@ let app = {
 
     rectLight1 = new THREE.RectAreaLight(0xff0000, 5, 4, 10)
     rectLight1.position.set(- 5, 5, 5)
-    this.scene.add(rectLight1)
+    scene.add(rectLight1)
 
     rectLight2 = new THREE.RectAreaLight(0x00ff00, 5, 4, 10)
     rectLight2.position.set(0, 5, 5)
-    this.scene.add(rectLight2)
+    scene.add(rectLight2)
 
     rectLight3 = new THREE.RectAreaLight(0x0000ff, 5, 4, 10)
     rectLight3.position.set(5, 5, 5)
-    this.scene.add(rectLight3)
+    scene.add(rectLight3)
 
-    this.scene.add(new RectAreaLightHelper(rectLight1))
-    this.scene.add(new RectAreaLightHelper(rectLight2))
-    this.scene.add(new RectAreaLightHelper(rectLight3))
+    scene.add(new RectAreaLightHelper(rectLight1))
+    scene.add(new RectAreaLightHelper(rectLight2))
+    scene.add(new RectAreaLightHelper(rectLight3))
 
     // Create the floor
     const geoFloor = new THREE.BoxGeometry(200, 0.1, 200)
@@ -102,7 +100,7 @@ let app = {
     // need await to make sure animation starts only after texture is loaded
     // this works because the animation code is 'then-chained' after initScene(), see core-utils.runApp
     await this.loadTexture(mshStdFloor)
-    this.scene.add(mshStdFloor)
+    scene.add(mshStdFloor)
 
     // Create the torus knot
     const geoKnot = new THREE.TorusKnotGeometry(1.5, 0.5, 200, 16)
@@ -112,7 +110,7 @@ let app = {
     this.meshKnot.position.set(0, 5, 0)
     // update orbit controls to target meshKnot at center
     this.controls.target.copy(this.meshKnot.position)
-    this.scene.add(this.meshKnot)
+    scene.add(this.meshKnot)
 
     // GUI controls
     const gui = new dat.GUI()
@@ -143,6 +141,7 @@ let app = {
     this.stats1 = new Stats()
     this.stats1.showPanel(0) // Panel 0 = fps
     this.stats1.domElement.style.cssText = "position:absolute;top:0px;left:0px;"
+    // this.container is the parent DOM element of the threejs canvas element
     this.container.appendChild(this.stats1.domElement)
   },
   // load a texture for the floor
