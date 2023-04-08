@@ -14,8 +14,8 @@ This template does not cover all scenarios or usages of Three.js, and is still u
 
 ## Package versions
 
-- dat.gui: ^0.7.9
-- three: 0.145.0
+- dat.gui: 0.x (to get latest 0.* version)
+- three: 0.x (to get latest 0.* version)
 - parcel: ^2.7.0
 
 ## How to run locally
