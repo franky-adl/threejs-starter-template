@@ -8,8 +8,8 @@
     "build": "parcel build src/index.html --public-url ./"
   },
   "dependencies": {
-    "dat.gui": "^0.7.9",
-    "three": "0.145.0"
+    "dat.gui": "0.x",
+    "three": "0.x"
   },
   "devDependencies": {
     "parcel": "^2.7.0"

@@ -14,6 +14,9 @@ import { createCamera, createComposer, createRenderer, runApp } from "./core-uti
 import Tile from './assets/checker_tile.png'
 
 global.THREE = THREE
+// previously this feature is .legacyMode = false, see https://www.donmccurdy.com/2020/06/17/color-management-in-threejs/
+// turning this on has the benefit of doing certain automatic conversions (for hexadecimal and CSS colors from sRGB to linear-sRGB)
+THREE.ColorManagement.enabled = true
 
 /**************************************************
  * 0. Tweakable parameters for the scene
@@ -41,13 +44,14 @@ let scene = new THREE.Scene()
 // 1st param receives additional WebGLRenderer properties
 // 2nd param receives a custom callback to further configure the renderer
 let renderer = createRenderer({ antialias: true }, (_renderer) => {
-  // e.g. uncomment below if you want the output to be in sRGB color space
+  // best practice: ensure output colorspace is in sRGB, see Color Management documentation:
+  // https://threejs.org/docs/#manual/en/introduction/Color-management
   _renderer.outputEncoding = THREE.sRGBEncoding
 })
 
 // Create the camera
 // Pass in fov, near, far and camera position respectively
-let camera = createCamera(45, 1, 1000, { x: 0, y: 5, z: -15 })
+let camera = createCamera(45, 1, 1000, { x: 0, y: 5, z: 15 })
 
 // (Optional) Create the EffectComposer and passes for post-processing
 // If you don't need post-processing, just comment/delete the following creation code, and skip passing any composer to 'runApp' at the bottom
@@ -78,15 +82,18 @@ let app = {
     RectAreaLightUniformsLib.init()
 
     let rectLight1 = new THREE.RectAreaLight(0xff0000, 5, 4, 10)
-    rectLight1.position.set(- 5, 5, 5)
+    rectLight1.position.set( -5, 5, -5)
+    rectLight1.lookAt( -5, 5, 0 )
     scene.add(rectLight1)
 
     let rectLight2 = new THREE.RectAreaLight(0x00ff00, 5, 4, 10)
-    rectLight2.position.set(0, 5, 5)
+    rectLight2.position.set(0, 5, -5)
+    rectLight2.lookAt( 0, 5, 0 )
     scene.add(rectLight2)
 
     let rectLight3 = new THREE.RectAreaLight(0x0000ff, 5, 4, 10)
-    rectLight3.position.set(5, 5, 5)
+    rectLight3.position.set(5, 5, -5)
+    rectLight3.lookAt( 5, 5, 0 )
     scene.add(rectLight3)
 
     scene.add(new RectAreaLightHelper(rectLight1))
