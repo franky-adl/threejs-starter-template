@@ -19,6 +19,7 @@ import {
 
 // Other deps
 import Tile from './assets/checker_tile.png';
+import { DirectionalLightHelper } from 'three';
 
 global.THREE = THREE;
 // previously this feature is .legacyMode = false, see https://www.donmccurdy.com/2020/06/17/color-management-in-threejs/
@@ -80,24 +81,33 @@ let app = {
     // Create rect area lights
     RectAreaLightUniformsLib.init();
 
-    let rectLight1 = new THREE.RectAreaLight(0xff0000, 5, 4, 10);
-    rectLight1.position.set(-5, 5, -5);
-    rectLight1.lookAt(-5, 5, 0);
-    scene.add(rectLight1);
+    // let rectLight1 = new THREE.RectAreaLight(0xff0000, 5, 4, 10);
+    // rectLight1.position.set(-5, 5, -5);
+    // rectLight1.lookAt(-5, 5, 0);
+    // scene.add(rectLight1);
 
-    let rectLight2 = new THREE.RectAreaLight(0x00ff00, 5, 4, 10);
-    rectLight2.position.set(0, 5, -5);
-    rectLight2.lookAt(0, 5, 0);
-    scene.add(rectLight2);
+    // let rectLight2 = new THREE.RectAreaLight(0x00ff00, 5, 4, 10);
+    // rectLight2.position.set(0, 5, -5);
+    // rectLight2.lookAt(0, 5, 0);
+    // scene.add(rectLight2);
 
-    let rectLight3 = new THREE.RectAreaLight(0x0000ff, 5, 4, 10);
-    rectLight3.position.set(5, 5, -5);
-    rectLight3.lookAt(5, 5, 0);
-    scene.add(rectLight3);
+    // let rectLight3 = new THREE.RectAreaLight(0x0000ff, 5, 4, 10);
+    // rectLight3.position.set(5, 5, -5);
+    // rectLight3.lookAt(5, 5, 0);
+    // scene.add(rectLight3);
 
-    scene.add(new RectAreaLightHelper(rectLight1));
-    scene.add(new RectAreaLightHelper(rectLight2));
-    scene.add(new RectAreaLightHelper(rectLight3));
+    // scene.add(new RectAreaLightHelper(rectLight1));
+    // scene.add(new RectAreaLightHelper(rectLight2));
+    // scene.add(new RectAreaLightHelper(rectLight3));
+
+    // Create directional light
+    let dirLight1 = new THREE.DirectionalLight(0xffffff, 0.5);
+    dirLight1.position.set(5, 5, 5);
+    dirLight1.lookAt(0, 5, 0);
+    scene.add(dirLight1);
+
+    scene.add(new DirectionalLightHelper(dirLight1));
+
 
     // Create the floor
     const geoFloor = new THREE.BoxGeometry(200, 0.1, 200);

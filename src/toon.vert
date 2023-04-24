@@ -17,6 +17,7 @@ void main() {
   vec4 clipPosition = projectionMatrix * viewPosition;
 
   vNormal = normalize(normalMatrix * normal);
+  vViewDir = normalize(-viewPosition.xyz);
 
   gl_Position = clipPosition;
 }
