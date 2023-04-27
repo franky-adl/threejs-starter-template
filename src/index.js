@@ -108,7 +108,6 @@ let app = {
 
     scene.add(new DirectionalLightHelper(dirLight1));
 
-
     // Create the floor
     const geoFloor = new THREE.BoxGeometry(200, 0.1, 200);
     const matStdFloor = new THREE.MeshStandardMaterial({
@@ -147,16 +146,19 @@ let app = {
       fragmentShader: toonFragmentShader,
     });
     var sphere = new THREE.Mesh(geo, material);
-    sphere.position.set(0,(sphere.geometry.parameters.radius*1.02 ),0);
+    sphere.position.set(0, sphere.geometry.parameters.radius * 1.02, 0);
     scene.add(sphere);
     //sphere.position.y = sphere.geometry.parameters.radius;
     //sphere.position.set(0,phere.geometry.parameters.radius,0);
 
     //Trying to add outline
-    var outlinematerial1 = new THREE.MeshBasicMaterial({color:0x000000, side: THREE.BackSide});
+    var outlinematerial1 = new THREE.MeshBasicMaterial({
+      color: 0x000000,
+      side: THREE.BackSide,
+    });
     var outlineMesh = new THREE.Mesh(geo, outlinematerial1);
     //outlineMesh.position = sphere.position;
-    outlineMesh.position.set(0,sphere.geometry.parameters.radius * 1.02,0);
+    outlineMesh.position.set(0, sphere.geometry.parameters.radius * 1.02, 0);
     outlineMesh.scale.multiplyScalar(1.02);
     scene.add(outlineMesh);
 

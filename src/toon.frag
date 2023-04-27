@@ -24,7 +24,29 @@ void main() {
   // directional light
   float NdotL = dot(vNormal, directionalLights[0].direction);
   float lightIntensity = smoothstep(0.0, 0.01, NdotL);
-  vec3 directionalLight = directionalLights[0].color * lightIntensity;
+  vec3 directionalLight;
+
+  // if (NdotL < 0.40) {
+  //   directionalLight = directionalLights[0].color * lightIntensity * 0.1;
+  // } else if (abs(NdotL) < 0.70) {
+  //   directionalLight = directionalLights[0].color * lightIntensity * 0.3;
+  // } else if (abs(NdotL) < 0.90) {
+  //   directionalLight = directionalLights[0].color * lightIntensity * 0.6;
+  // } else if (NdotL < 1.0) {
+  //   directionalLight = directionalLights[0].color * lightIntensity;
+  // }
+
+  //
+    if (NdotL < 0.40) {
+    directionalLight = (directionalLights[0].color + vec3(0.0, 7.0, -0.5))  * lightIntensity * 0.1;
+  } else if (abs(NdotL) < 0.70) {
+    directionalLight = (directionalLights[0].color + vec3(0.5, 5.0, -1.0)) * lightIntensity * 0.3;
+  } else if (abs(NdotL) < 0.90) {
+    directionalLight = (directionalLights[0].color + vec3(1.0, 3.0, -1.5))  * lightIntensity * 0.6;
+  } else if (NdotL < 1.0) {
+    directionalLight = (directionalLights[0].color + vec3(2.0, 2.0, -2.0)) * lightIntensity;
+  }
+
 
 
   // specular reflection
@@ -51,7 +73,7 @@ void main() {
 
   vec3 rim = rimIntensity * directionalLights[0].color;
 
-  gl_FragColor = vec4(uColor * (ambientLightColor + directionalLight + specular + rim), 1.0);
+  gl_FragColor = vec4(uColor  * (ambientLightColor + directionalLight + specular + rim), 1.0);
   // gl_FragColor = vec4(uColor + rim + specular +, 1.0);
 
 
