@@ -20,6 +20,8 @@ import {
 
 // Other deps
 import Tile from './assets/checker_tile.png';
+import Okami from './assets/okami_icewater.png';
+import Cracked from './assets/cracked.png';
 import { DirectionalLightHelper } from 'three';
 
 global.THREE = THREE;
@@ -144,33 +146,42 @@ let app = {
       },
       // adding the custom shader stuff connected to toon.vert and toon.frag
       vertexShader: toonVertexShader,
-      fragmentShader: hadesFragmentShader,
+      fragmentShader: toonFragmentShader,
     });
-    var sphere = new THREE.Mesh(geo, material);
+
+    // cheater way of bump mapping, can use Three's toon, phong, or lambert shader (toon looks the worst...)
+    var bumpMaterial = new THREE.MeshPhongMaterial({color: '#d14c2a'})
+    var texture = new THREE.TextureLoader().load(Cracked)
+    bumpMaterial.bumpMap = texture
+    bumpMaterial.bumpScale = 0.05 // higher values = more textured lines. lower values = cartoonish/smoother effect
+
+
+    var sphere = new THREE.Mesh(geo, bumpMaterial);
     sphere.position.set(0, sphere.geometry.parameters.radius * 1.02, 0);
-    // scene.add(sphere);
-    //sphere.position.y = sphere.geometry.parameters.radius;
-    //sphere.position.set(0,phere.geometry.parameters.radius,0);
+    scene.add(sphere);
+    sphere.position.y = sphere.geometry.parameters.radius;
+    sphere.position.set(0,sphere.geometry.parameters.radius,0);
 
     var geometry = new THREE.TorusKnotGeometry(2, 0.6, 128, 16);
-    var torus = new THREE.Mesh(geometry, material);
-    scene.add(torus);
-    torus.position.y = sphere.geometry.parameters.radius + 2;
+    var torus = new THREE.Mesh(geometry, bumpMaterial);
+    // scene.add(torus);
+    // torus.position.y = sphere.geometry.parameters.radius + 2;
 
-    //Trying to add outline
-    var outlinematerial1 = new THREE.MeshBasicMaterial({
-      color: 0x000000,
-      side: THREE.BackSide,
-    });
-    var outlineMesh = new THREE.Mesh(geometry, outlinematerial1);
-    //outlineMesh.position = sphere.position;
-    outlineMesh.position.set(
-      0,
-      (sphere.geometry.parameters.radius + 2) * 1.02,
-      0
-    );
-    outlineMesh.scale.multiplyScalar(1.02);
-    scene.add(outlineMesh);
+
+    // Trying to add outline
+    // var outlinematerial1 = new THREE.MeshBasicMaterial({
+    //   color: 0x000000,
+    //   side: THREE.BackSide,
+    // });
+    // var outlineMesh = new THREE.Mesh(geometry, outlinematerial1);
+    // //outlineMesh.position = sphere.position;
+    // outlineMesh.position.set(
+    //   0,
+    //   (sphere.geometry.parameters.radius + 2) * 1.02,
+    //   0
+    // );
+    // outlineMesh.scale.multiplyScalar(1.02);
+    // scene.add(outlineMesh);
 
     // GUI controls
     const gui = new dat.GUI();
