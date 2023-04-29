@@ -152,6 +152,10 @@ let app = {
     // cheater way of bump mapping, can use Three's toon, phong, or lambert shader (toon looks the worst...)
     var bumpMaterial = new THREE.MeshPhongMaterial({color: '#d14c2a'})
     var texture = new THREE.TextureLoader().load(Cracked)
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.RepeatWrapping;
+    texture.repeat.set( 2, 2 ); // denser pattern
+
     bumpMaterial.bumpMap = texture
     bumpMaterial.bumpScale = 0.05 // higher values = more textured lines. lower values = cartoonish/smoother effect
 
