@@ -10,7 +10,10 @@
 
 
 #include <common>
+#include <packing>
 #include <lights_pars_begin>
+#include <shadowmap_pars_fragment>
+#include <shadowmask_pars_fragment>
 
 uniform vec3 uColor;
 
@@ -21,47 +24,57 @@ varying vec3 vViewDir;
 
 
 void main() {
+  // shadow map 
+  DirectionalLightShadow directionalShadow = directionalLightShadows[0];
+
+float shadow = getShadow(
+    directionalShadowMap[0],
+    directionalShadow.shadowMapSize,
+    directionalShadow.shadowBias,
+    directionalShadow.shadowRadius,
+    vDirectionalShadowCoord[0]
+  );
+
   // directional light
   float NdotL = dot(vNormal, directionalLights[0].direction);
-  float lightIntensity = smoothstep(0.0, 0.01, NdotL);
+  float lightIntensity = smoothstep(0.0, 0.01, NdotL * shadow);
   vec3 directionalLight;
 
-  // if (NdotL < 0.40) {
-  //   directionalLight = directionalLights[0].color * lightIntensity * 0.1;
-  // } else if (abs(NdotL) < 0.70) {
-  //   directionalLight = directionalLights[0].color * lightIntensity * 0.3;
-  // } else if (abs(NdotL) < 0.90) {
-  //   directionalLight = directionalLights[0].color * lightIntensity * 0.6;
-  // } else if (NdotL < 1.0) {
-  //   directionalLight = directionalLights[0].color * lightIntensity;
-  // }
+  // no additional banding
+  // directionalLight = directionalLights[0].color * lightIntensity;
 
-  //
-    if (NdotL < 0.40) {
-    directionalLight = (directionalLights[0].color + vec3(0.0, 7.0, -0.5))  * lightIntensity * 0.1;
+  // with banding 
+  if (NdotL < 0.40) {
+    directionalLight = directionalLights[0].color * lightIntensity * 0.1;
   } else if (abs(NdotL) < 0.70) {
-    directionalLight = (directionalLights[0].color + vec3(0.5, 5.0, -1.0)) * lightIntensity * 0.3;
+    directionalLight = directionalLights[0].color * lightIntensity * 0.3;
   } else if (abs(NdotL) < 0.90) {
-    directionalLight = (directionalLights[0].color + vec3(1.0, 3.0, -1.5))  * lightIntensity * 0.6;
+    directionalLight = directionalLights[0].color * lightIntensity * 0.6;
   } else if (NdotL < 1.0) {
-    directionalLight = (directionalLights[0].color + vec3(2.0, 2.0, -2.0)) * lightIntensity;
+    directionalLight = directionalLights[0].color * lightIntensity;
   }
 
-
+  // with banding alternate
+  //   if (NdotL < 0.40) {
+  //   directionalLight = (directionalLights[0].color + vec3(0.0, 7.0, -0.5))  * lightIntensity * 0.1;
+  // } else if (abs(NdotL) < 0.70) {
+  //   directionalLight = (directionalLights[0].color + vec3(0.5, 5.0, -1.0)) * lightIntensity * 0.3;
+  // } else if (abs(NdotL) < 0.90) {
+  //   directionalLight = (directionalLights[0].color + vec3(1.0, 3.0, -1.5))  * lightIntensity * 0.6;
+  // } else if (NdotL < 1.0) {
+  //   directionalLight = (directionalLights[0].color + vec3(2.0, 2.0, -2.0)) * lightIntensity;
+  // }
 
   // specular reflection
   vec3 halfVector = normalize(directionalLights[0].direction + vViewDir);
   float NdotH = dot(vNormal, halfVector);
 
-  // adjust to preference, could be a GUI feature
-  float glossiness = 5.0;
+  float glossiness = 5.0; // adjust to preference, could be a GUI feature
 
   float specularIntensity = pow(NdotH * lightIntensity, 1000.0 / glossiness);
   float specularIntensitySmooth = smoothstep(0.05, 0.1, specularIntensity);
 
   vec3 specular = specularIntensitySmooth * directionalLights[0].color;
-
-
 
   // // rim lighting but it seems like a cheese way to do it, can prob improve
   float rimDot = 1.0 - dot(vViewDir, vNormal);

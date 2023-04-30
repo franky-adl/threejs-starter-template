@@ -59,6 +59,9 @@ let renderer = createRenderer({ antialias: true }, (_renderer) => {
   _renderer.outputEncoding = THREE.sRGBEncoding;
 });
 
+renderer.shadowMap.enabled = true;
+// renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
 // Create the camera
 // Pass in fov, near, far and camera position respectively
 let camera = createCamera(45, 1, 1000, { x: 0, y: 5, z: 15 });
@@ -107,6 +110,11 @@ let app = {
     let dirLight1 = new THREE.DirectionalLight(0xffffff, 0.5);
     dirLight1.position.set(5, 5, 5);
     dirLight1.lookAt(0, 5, 0);
+
+    dirLight1.castShadow = true;
+    dirLight1.shadow.mapSize.width = 4096;
+    dirLight1.shadow.mapSize.height = 4096;
+
     scene.add(dirLight1);
 
     scene.add(new DirectionalLightHelper(dirLight1));
@@ -125,6 +133,7 @@ let app = {
     scene.add(mshStdFloor);
 
     scene.add(new THREE.AmbientLight(0x888888));
+    mshStdFloor.receiveShadow = true;
 
     // the sphere stuff!
     // i discovered a "meshtoonmaterial" that should be built in and looks really good
@@ -160,16 +169,19 @@ let app = {
     bumpMaterial.bumpScale = 0.05 // higher values = more textured lines. lower values = cartoonish/smoother effect
 
 
-    var sphere = new THREE.Mesh(geo, bumpMaterial);
+    var sphere = new THREE.Mesh(geo, material);
     sphere.position.set(0, sphere.geometry.parameters.radius * 1.02, 0);
     scene.add(sphere);
     sphere.position.y = sphere.geometry.parameters.radius;
     sphere.position.set(0,sphere.geometry.parameters.radius,0);
+    sphere.castShadow = true;
+    sphere.receiveShadow = true;
 
-    var geometry = new THREE.TorusKnotGeometry(2, 0.6, 128, 16);
+    var geometry = new THREE.TorusKnotGeometry(1, 0.3);
     var torus = new THREE.Mesh(geometry, bumpMaterial);
-    // scene.add(torus);
-    // torus.position.y = sphere.geometry.parameters.radius + 2;
+    scene.add(torus);
+    torus.position.set(5, sphere.geometry.parameters.radius + 2, 2);
+    torus.castShadow = true;
 
 
     // Trying to add outline
