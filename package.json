@@ -1,6 +1,6 @@
 {
   "name": "threejs-starter-template",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "browserslist": "> 0.5%, last 2 versions, not dead",
   "scripts": {
@@ -12,7 +12,8 @@
     "three": "0.x"
   },
   "devDependencies": {
-    "parcel": "^2.7.0"
+    "@parcel/transformer-glsl": "^2.9.3",
+    "parcel": "^2.9.3"
   },
   "keywords": []
 }

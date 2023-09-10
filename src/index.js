@@ -8,10 +8,11 @@ import { RectAreaLightUniformsLib } from "three/examples/jsm/lights/RectAreaLigh
 import { BokehPass } from "three/examples/jsm/postprocessing/BokehPass"
 
 // Core boilerplate code deps
-import { createCamera, createComposer, createRenderer, runApp } from "./core-utils"
+import { createCamera, createComposer, createRenderer, runApp, updateLoadingProgressBar, getDefaultUniforms } from "./core-utils"
 
 // Other deps
 import Tile from './assets/checker_tile.png'
+import { loadTexture } from "./common-utils"
 
 global.THREE = THREE
 // previously this feature is .legacyMode = false, see https://www.donmccurdy.com/2020/06/17/color-management-in-threejs/
@@ -29,8 +30,11 @@ const params = {
   lightThreeSwitch: true,
   // Bokeh pass properties
   focus: 0.0,
-  aperture: 0,
+  aperture: 0.0,
   maxblur: 0.0
+}
+const uniforms = {
+  ...getDefaultUniforms(),
 }
 
 
@@ -46,7 +50,7 @@ let scene = new THREE.Scene()
 let renderer = createRenderer({ antialias: true }, (_renderer) => {
   // best practice: ensure output colorspace is in sRGB, see Color Management documentation:
   // https://threejs.org/docs/#manual/en/introduction/Color-management
-  _renderer.outputEncoding = THREE.sRGBEncoding
+  _renderer.outputColorSpace = THREE.SRGBColorSpace
 })
 
 // Create the camera
@@ -56,9 +60,9 @@ let camera = createCamera(45, 1, 1000, { x: 0, y: 5, z: 15 })
 // (Optional) Create the EffectComposer and passes for post-processing
 // If you don't need post-processing, just comment/delete the following creation code, and skip passing any composer to 'runApp' at the bottom
 let bokehPass = new BokehPass(scene, camera, {
-  focus: 0.0,
-  aperture: 0.0,
-  maxblur: 0.0
+  focus: params.focus,
+  aperture: params.aperture,
+  maxblur: params.maxblur
 })
 // The RenderPass is already created in 'createComposer'
 let composer = createComposer(renderer, scene, camera, (comp) => {
@@ -81,6 +85,8 @@ let app = {
     // Create rect area lights
     RectAreaLightUniformsLib.init()
 
+    await updateLoadingProgressBar(0.1)
+
     let rectLight1 = new THREE.RectAreaLight(0xff0000, 5, 4, 10)
     rectLight1.position.set( -5, 5, -5)
     rectLight1.lookAt( -5, 5, 0 )
@@ -101,13 +107,22 @@ let app = {
     scene.add(new RectAreaLightHelper(rectLight3))
 
     // Create the floor
+    const tex = await loadTexture(Tile)
+    tex.colorSpace = THREE.SRGBColorSpace
+    tex.wrapS = THREE.RepeatWrapping
+    tex.wrapT = THREE.RepeatWrapping
+    tex.repeat.set(40,40)
     const geoFloor = new THREE.BoxGeometry(200, 0.1, 200)
-    const matStdFloor = new THREE.MeshStandardMaterial({ color: 0x808080, roughness: 0.5, metalness: 0 })
+    const matStdFloor = new THREE.MeshStandardMaterial({
+      color: 0x808080,
+      roughness: 0.5,
+      metalness: 0,
+      map: tex
+    })
     const mshStdFloor = new THREE.Mesh(geoFloor, matStdFloor)
-    // need await to make sure animation starts only after texture is loaded
-    // this works because the animation code is 'then-chained' after initScene(), see core-utils.runApp
-    await this.loadTexture(mshStdFloor)
     scene.add(mshStdFloor)
+
+    await updateLoadingProgressBar(0.5)
 
     // Create the torus knot
     const geoKnot = new THREE.TorusKnotGeometry(1.5, 0.5, 200, 16)
@@ -150,23 +165,8 @@ let app = {
     this.stats1.domElement.style.cssText = "position:absolute;top:0px;left:0px;"
     // this.container is the parent DOM element of the threejs canvas element
     this.container.appendChild(this.stats1.domElement)
-  },
-  // load a texture for the floor
-  // returns a promise so the caller can await on this function
-  loadTexture(mshStdFloor) {
-    return new Promise((resolve, reject) => {
-      var loader = new THREE.TextureLoader()
-      loader.load(Tile, function (texture) {
-        texture.wrapS = THREE.RepeatWrapping
-        texture.wrapT = THREE.RepeatWrapping
-        texture.repeat.set(40, 40)
-        mshStdFloor.material.map = texture
-        resolve()
-      }, undefined, function (error) {
-        console.log(error)
-        reject(error)
-      })
-    })
+
+    await updateLoadingProgressBar(1.0, 100)
   },
   // @param {number} interval - time elapsed between 2 frames
   // @param {number} elapsed - total time elapsed since app start
@@ -187,4 +187,4 @@ let app = {
  * ps. if you don't use custom shaders, pass undefined to the 'uniforms'(2nd-last) param
  * ps. if you don't use post-processing, pass undefined to the 'composer'(last) param
  *************************************************/
-runApp(app, scene, renderer, camera, true, undefined, composer)
+runApp(app, scene, renderer, camera, true, uniforms, composer)
