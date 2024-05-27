@@ -2,9 +2,10 @@
 
 A Three.js starter template that helps you group your code better and hides the boilerplate clutter away from your main file.
 This template does not cover all scenarios or usages of Three.js, and is still under development. Feel free to fork it or raise pull requests!
+By the way, I have created a newer react-three-fiber starter template, go check it out and fork it! https://github.com/franky-adl/rtf-starter-template
 
 ![Repo cover image](repo-cover.png?raw=true)
-*The sample scene used by this boilerplate*
+_The sample scene used by this boilerplate_
 
 ## Features of this template
 
@@ -14,8 +15,8 @@ This template does not cover all scenarios or usages of Three.js, and is still u
 
 ## Package versions
 
-- dat.gui: 0.x (to get latest 0.* version)
-- three: 0.x (to get latest 0.* version)
+- dat.gui: 0.x (to get latest 0.\* version)
+- three: 0.x (to get latest 0.\* version)
 - parcel: ^2.7.0
 
 ## How to run locally
